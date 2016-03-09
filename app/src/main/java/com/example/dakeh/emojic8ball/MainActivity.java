@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Age", agge);
         Log.d("Name in variable", name);
 
-        String [] extraResponseArray = {"Hello World", "Happy go lucky"};
+        String [] extraResponseArray = {"Hello World", "Happy go lucky", ":)"};
 
         MagicEightBallModel mb = new MagicEightBallModel(extraResponseArray);
 
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Question 3","Will I end up becoming a cat person when I get old");
         responseLog = generateResponse(mb);
         Log.d("Response 3", responseLog);
+
+        Log.d("All the response",Arrays.toString(mb.responseArray));
 
     }
 

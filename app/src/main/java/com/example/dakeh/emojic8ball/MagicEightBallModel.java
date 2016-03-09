@@ -49,4 +49,6 @@ public class MagicEightBallModel extends Object {
 //            Log.d("Response", responseArray[i]);
 //        }
     }
+
+
 }
