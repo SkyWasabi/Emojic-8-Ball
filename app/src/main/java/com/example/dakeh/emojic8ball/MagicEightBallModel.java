@@ -50,5 +50,9 @@ public class MagicEightBallModel extends Object {
 //        }
     }
 
+    public String toString() {
+        return " " + responseArray;
+    }
+
 
 }

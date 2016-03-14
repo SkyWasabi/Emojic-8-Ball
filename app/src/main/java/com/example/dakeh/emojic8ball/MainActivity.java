@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Response 3", responseLog);
 
         Log.d("All the response",Arrays.toString(mb.responseArray));
+        Log.d("All the response",mb.toString());
 
     }
 
