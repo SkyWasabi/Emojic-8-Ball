@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="circlearray">
+        <item>@drawable/circle1</item>
+        <item>@drawable/circle2</item>
+        <item>@drawable/circle3</item>
+        <item>@drawable/circle4</item>
+        <item>@drawable/circle5</item>
+        <item>@drawable/circle6</item>
+    </array>
+</resources>
