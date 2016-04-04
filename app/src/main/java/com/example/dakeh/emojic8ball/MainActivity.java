@@ -1,9 +1,12 @@
 package com.example.dakeh.emojic8ball;
 
+import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.media.Image;
 import android.provider.ContactsContract;
 import android.provider.Settings;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +18,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +31,66 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
+
+        LinearLayout linear = new LinearLayout(this);
+        linear.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        linear.setOrientation(LinearLayout.VERTICAL);
+
+        RelativeLayout relative = new RelativeLayout(this);
+        relative.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        //relative.setBackgroundResource(R.drawable.background);
+        linear.setOrientation(LinearLayout.VERTICAL);
+        linear.addView(relative);
+
+        final EditText question = new EditText(this);
+        question.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+        RelativeLayout.LayoutParams editpa = (RelativeLayout.LayoutParams)question.getLayoutParams();
+        editpa.addRule(RelativeLayout.ALIGN_PARENT_END);
+        question.setId(View.generateViewId());
+        question.setHint("Ask a question");
+
+        ImageView background = new ImageView(this);
+        background.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+        Resources res = getResources();
+        background.setImageDrawable(res.getDrawable(R.drawable.background));
+        RelativeLayout.LayoutParams bgpa = (RelativeLayout.LayoutParams)background.getLayoutParams();
+        background.setId(View.generateViewId());
+        background.setScaleType(ImageView.ScaleType.FIT_XY);
+        bgpa.addRule(RelativeLayout.BELOW, question.getId());
+
+        final ImageView circle = new ImageView(this);
+        circle.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+        RelativeLayout.LayoutParams circlepa = (RelativeLayout.LayoutParams)circle.getLayoutParams();
+        circlepa.addRule(RelativeLayout.CENTER_VERTICAL);
+        circlepa.addRule(RelativeLayout.ALIGN_PARENT_START);
+        circle.setImageDrawable(res.getDrawable(R.drawable.circle1));
+
+        final TextView response = new TextView(this);
+        response.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+        response.setText("Hello World");
+        response.setTextColor(Color.parseColor("#FFFFFF"));
+        response.setTextSize(22);
+        RelativeLayout.LayoutParams respa = (RelativeLayout.LayoutParams)response.getLayoutParams();
+        respa.addRule(RelativeLayout.CENTER_VERTICAL);
+        respa.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
+        Button button = new Button(this);
+        button.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 180));
+        button.setText("Shake");
+        button.setTextColor(Color.parseColor("#000000"));
+        RelativeLayout.LayoutParams buttonpa = (RelativeLayout.LayoutParams)button.getLayoutParams();
+        buttonpa.addRule(RelativeLayout.ALIGN_BOTTOM, background.getId());
+        button.setBackgroundResource(R.drawable.shakebutton);
+
+
+        relative.addView(background);
+        relative.addView(question);
+        relative.addView(circle);
+        relative.addView(response);
+        relative.addView(button);
+
+        addContentView(linear, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
         String [] extraResponseArray = {"Hello World", "Happy go lucky", ":)"};
 
@@ -34,10 +98,10 @@ public class MainActivity extends AppCompatActivity {
 
         //noDPI //drawable
 
-        final EditText question = (EditText) findViewById(R.id.questioninput);
-        final ImageView background = (ImageView) findViewById(R.id.bg);
-        final ImageView circle = (ImageView) findViewById(R.id.circle);
-        final TextView response = (TextView) findViewById(R.id.response);
+        //final EditText question = (EditText) findViewById(R.id.questioninput);
+        //final ImageView background = (ImageView) findViewById(R.id.bg);
+        //final ImageView circle = (ImageView) findViewById(R.id.circle);
+        //final TextView response = (TextView) findViewById(R.id.response);
 
         final String checktext = question.getText().toString().trim();
         final TypedArray circlearray = getResources().obtainTypedArray(R.array.circlearray);
@@ -58,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button button = (Button)findViewById(R.id.shakebutton);
+        //Button button = (Button)findViewById(R.id.shakebutton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
