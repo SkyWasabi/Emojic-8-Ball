@@ -22,9 +22,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/questioninput"
-            android:inputType="text"
+            android:inputType="textImeMultiLine"
             android:layout_alignParentEnd="true"
-            android:hint="Ask a question..." />
+            android:hint="Ask a question..."
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:maxLines="1"/>
 
         <ImageView
             android:layout_width="match_parent"
@@ -55,7 +58,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:text="Shake"
+            android:text="History"
             android:textColor="#000000"
             android:id="@+id/shakebutton"
             android:layout_alignBottom="@id/bg"

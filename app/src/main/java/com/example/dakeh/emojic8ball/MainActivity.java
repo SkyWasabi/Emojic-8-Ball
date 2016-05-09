@@ -1,9 +1,13 @@
 package com.example.dakeh.emojic8ball;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.media.Image;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.v7.app.ActionBar;
@@ -15,6 +19,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,6 +28,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -49,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         editpa.addRule(RelativeLayout.ALIGN_PARENT_END);
         question.setId(View.generateViewId());
         question.setHint("Ask a question");
+        question.setSingleLine();
+
 
         ImageView background = new ImageView(this);
         background.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
@@ -77,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button button = new Button(this);
         button.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 180));
-        button.setText("Shake");
+        button.setText("History");
         button.setTextColor(Color.parseColor("#000000"));
         RelativeLayout.LayoutParams buttonpa = (RelativeLayout.LayoutParams)button.getLayoutParams();
         buttonpa.addRule(RelativeLayout.ALIGN_BOTTOM, background.getId());
@@ -96,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
 
         final MagicEightBallModel mb = new MagicEightBallModel(extraResponseArray);
 
+        String filepath = this.getFilesDir().getPath().toString() + "/myobject.txt";
+        final File f = new File(filepath);
+
+        final ArrayList<QuestionResponseModel> questionResponseModelArrayList = new ArrayList<QuestionResponseModel>();
+        writeArrayToFile(questionResponseModelArrayList, f);
+
         //noDPI //drawable
 
         //final EditText question = (EditText) findViewById(R.id.questioninput);
@@ -103,14 +123,21 @@ public class MainActivity extends AppCompatActivity {
         //final ImageView circle = (ImageView) findViewById(R.id.circle);
         //final TextView response = (TextView) findViewById(R.id.response);
 
-        final String checktext = question.getText().toString().trim();
         final TypedArray circlearray = getResources().obtainTypedArray(R.array.circlearray);
 
         question.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(question.getWindowToken(), 0);
+                final QuestionResponseModel questionresponse = new QuestionResponseModel();
                 if (((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) && (question.getText().toString().trim().length() != 0)) {
-                    functions(mb,circle, circlearray, response);
+                    questionresponse.setQuestion(question.getText().toString().trim());
+                    functions(mb,circle, circlearray, response, questionresponse);
+                    questionResponseModelArrayList.add(questionresponse);
+                    writeArrayToFile(questionResponseModelArrayList, f);
+
                     Log.d("Keyboard pressed enter", "");
                 }
 
@@ -127,17 +154,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (question.getText().toString().matches("")) {
-                    Toast.makeText(getApplicationContext(), "No question asked", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(MainActivity.this, HistoryActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("value", questionResponseModelArrayList);
+                i.putExtras(bundle);
+                startActivity(i);
 
-                }
 
-                else {
-                    functions(mb,circle, circlearray, response);
-                    Log.d("Button Triggered", "");
-                }
+//                final QuestionResponseModel questionresponse = new QuestionResponseModel();
+//                if (question.getText().toString().matches("")) {
+//                    Toast.makeText(getApplicationContext(), "No question asked", Toast.LENGTH_SHORT).show();
+//
+//                }
+//
+//                else {
+//                    questionresponse.setQuestion(question.getText().toString().trim());
+//                    functions(mb,circle, circlearray, response, questionresponse);
+//                    questionResponseModelArrayList.add(questionresponse);
+//                    writeArrayToFile(questionResponseModelArrayList, f);
+//
+//                    Log.d("Button Triggered", "");
+//                }
             }
         });
+
+
 
         double age = 21;
         String name = "Tan Shou Heng";
@@ -186,17 +227,43 @@ public class MainActivity extends AppCompatActivity {
         return mb.responseArray[randomint];
     }
 
-    public void functions (MagicEightBallModel mb, ImageView circle, TypedArray circlearray, TextView response)
+    public void functions (MagicEightBallModel mb, ImageView circle, TypedArray circlearray, TextView response, QuestionResponseModel questionResponseModel)
     {
         Random randomGenerator = new Random();
 
         int randomcircleindex = randomGenerator.nextInt(6);
         int resID = circlearray.getResourceId(randomcircleindex, 0);
 
+        String answer = generateResponse(mb, circle, circlearray);
+
         AlphaAnimation animation1 = new AlphaAnimation(1f, 0f);
         response.startAnimation(animation1);
-        response.setText(generateResponse(mb, circle, circlearray));
+        response.setText(answer);
+        questionResponseModel.setAnswer(answer);
         circle.setImageResource(resID);
     }
 
+    public void writeArrayToFile(ArrayList<QuestionResponseModel> questionResponseModels, File f) {
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
+            oos.writeObject(questionResponseModels);
+            oos.flush();
+            oos.close();
+        }catch (Exception e) {
+            Log.e(getLocalClassName(), "Can't save records " + e.getMessage());
+        }
+
+
+    }
+
+    public void readArrayFromFile(File f) {
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
+            QuestionResponseModel record = new QuestionResponseModel();
+            ArrayList<QuestionResponseModel> arrayofrecord = (ArrayList<QuestionResponseModel>) ois.readObject();
+
+        }catch (Exception e) {
+            Log.e(getLocalClassName(), "Can't read records " + e.getMessage());
+        }
+    }
 }
