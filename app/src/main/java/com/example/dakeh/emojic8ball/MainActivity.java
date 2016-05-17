@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.Settings;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,14 +37,29 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+
+    ArrayList<QuestionResponseModel> questionResponseModelArrayList;
+    TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
+
+        final Locale current = getResources().getConfiguration().locale;
+
+        tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    tts.setLanguage(current);
+                }
+            }
+        });
 
         LinearLayout linear = new LinearLayout(this);
         linear.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
@@ -106,14 +122,14 @@ public class MainActivity extends AppCompatActivity {
 
         addContentView(linear, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
-        String [] extraResponseArray = {"Hello World", "Happy go lucky", ":)"};
+        String [] extraResponseArray = {getResources().getString(R.string.hello), getResources().getString(R.string.happygolucky), ":)"};
 
         final MagicEightBallModel mb = new MagicEightBallModel(extraResponseArray);
 
         String filepath = this.getFilesDir().getPath().toString() + "/myobject.txt";
         final File f = new File(filepath);
 
-        final ArrayList<QuestionResponseModel> questionResponseModelArrayList = new ArrayList<QuestionResponseModel>();
+        questionResponseModelArrayList = new ArrayList<QuestionResponseModel>();
         writeArrayToFile(questionResponseModelArrayList, f);
 
         //noDPI //drawable
@@ -137,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                     functions(mb,circle, circlearray, response, questionresponse);
                     questionResponseModelArrayList.add(questionresponse);
                     writeArrayToFile(questionResponseModelArrayList, f);
-
+                    tts.speak(questionresponse.getAnswer(), TextToSpeech.QUEUE_FLUSH, null);
                     Log.d("Keyboard pressed enter", "");
                 }
 

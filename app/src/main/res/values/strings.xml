@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Emojic 8 Ball</string>
-    <string name="title_activity_history">HistoryActivity</string>
+    <string name="app_name">Emoji 8 Ball</string>
+    <string name="hello">Hello</string>
+    <string name="happygolucky">Happy go lucky</string>
 </resources>
