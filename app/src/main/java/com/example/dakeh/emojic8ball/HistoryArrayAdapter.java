@@ -5,16 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class HistoryArrayAdapter extends ArrayAdapter<QuestionResponseModel> {
-
-
-    ArrayList<QuestionResponseModel> questionResponseModels;
-    Context context;
-
 
     public HistoryArrayAdapter(Context context, ArrayList<QuestionResponseModel> questionResponseModels) {
         super(context, android.R.layout.simple_list_item_2, questionResponseModels);
@@ -23,6 +21,7 @@ public class HistoryArrayAdapter extends ArrayAdapter<QuestionResponseModel> {
 
 
     static class ViewHolderItem {
+        ImageView dlimg;
         TextView textView1;
         TextView textView2;
     }
@@ -39,6 +38,7 @@ public class HistoryArrayAdapter extends ArrayAdapter<QuestionResponseModel> {
             LayoutInflater inflater = LayoutInflater.from(getContext());
 
             convertView = inflater.inflate(R.layout.historyview, parent, false);
+            viewHolder.dlimg = (ImageView) convertView.findViewById(R.id.downloadedimage);
             viewHolder.textView1 = (TextView) convertView.findViewById(R.id.text1);
             viewHolder.textView2 = (TextView) convertView.findViewById(R.id.text2);
 
@@ -49,6 +49,7 @@ public class HistoryArrayAdapter extends ArrayAdapter<QuestionResponseModel> {
             viewHolder = (ViewHolderItem) convertView.getTag();
         }
 
+        Picasso.with(getContext()).load(questionResponseModel.getImageURL()).into(viewHolder.dlimg);
         viewHolder.textView1.setText(questionResponseModel.getQuestion());
         viewHolder.textView2.setText(questionResponseModel.getAnswer());
 

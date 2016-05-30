@@ -129,15 +129,15 @@ public class MainActivity extends AppCompatActivity {
         String filepath = this.getFilesDir().getPath().toString() + "/myobject.txt";
         final File f = new File(filepath);
 
-        questionResponseModelArrayList = new ArrayList<QuestionResponseModel>();
-        writeArrayToFile(questionResponseModelArrayList, f);
+        if (readArrayFromFile(f) != null) {
+            questionResponseModelArrayList = readArrayFromFile(f);
+        }
 
-        //noDPI //drawable
+        else {
+            questionResponseModelArrayList = new ArrayList<QuestionResponseModel>();
+        }
 
-        //final EditText question = (EditText) findViewById(R.id.questioninput);
-        //final ImageView background = (ImageView) findViewById(R.id.bg);
-        //final ImageView circle = (ImageView) findViewById(R.id.circle);
-        //final TextView response = (TextView) findViewById(R.id.response);
+        //writeArrayToFile(questionResponseModelArrayList, f);
 
         final TypedArray circlearray = getResources().obtainTypedArray(R.array.circlearray);
 
@@ -272,14 +272,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void readArrayFromFile(File f) {
+    public ArrayList<QuestionResponseModel> readArrayFromFile(File f) {
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
             QuestionResponseModel record = new QuestionResponseModel();
             ArrayList<QuestionResponseModel> arrayofrecord = (ArrayList<QuestionResponseModel>) ois.readObject();
 
+            return arrayofrecord;
         }catch (Exception e) {
             Log.e(getLocalClassName(), "Can't read records " + e.getMessage());
         }
+
+        return null;
     }
 }
