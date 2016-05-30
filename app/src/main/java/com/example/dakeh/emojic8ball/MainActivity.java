@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<QuestionResponseModel> questionResponseModelArrayList;
     TextToSpeech tts;
+    UploadJSONObject upload = new UploadJSONObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                     questionresponse.setQuestion(question.getText().toString().trim());
                     functions(mb,circle, circlearray, response, questionresponse);
                     questionResponseModelArrayList.add(questionresponse);
+                    upload.performUpload(questionresponse);
                     writeArrayToFile(questionResponseModelArrayList, f);
                     tts.speak(questionresponse.getAnswer(), TextToSpeech.QUEUE_FLUSH, null);
                     Log.d("Keyboard pressed enter", "");
@@ -196,31 +198,31 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        double age = 21;
-        String name = "Tan Shou Heng";
-        String responseLog;
-
-        String agge = String.format("%.2f", age);
-
-        Log.d("Name", "Tan Shou Heng");
-        Log.d("Age", agge);
-        Log.d("Name in variable", name);
-
-
-
-        Log.d("Question 1","Will I get full marks for this lab");
-        responseLog = generateResponse(mb, circle, circlearray);
-        Log.d("Response 1", responseLog);
-
-        Log.d("Question 2","Will the Cronulla sharks receive a premiership this year");
-        responseLog = generateResponse(mb, circle, circlearray);
-        Log.d("Response 2", responseLog);
-
-        Log.d("Question 3","Will I end up becoming a cat person when I get old");
-        responseLog = generateResponse(mb, circle ,circlearray);
-        Log.d("Response 3", responseLog);
-
-        Log.d("All the response",mb.toString());
+//        double age = 21;
+//        String name = "Tan Shou Heng";
+//        String responseLog;
+//
+//        String agge = String.format("%.2f", age);
+//
+//        Log.d("Name", "Tan Shou Heng");
+//        Log.d("Age", agge);
+//        Log.d("Name in variable", name);
+//
+//
+//
+//        Log.d("Question 1","Will I get full marks for this lab");
+//        responseLog = generateResponse(mb, circle, circlearray);
+//        Log.d("Response 1", responseLog);
+//
+//        Log.d("Question 2","Will the Cronulla sharks receive a premiership this year");
+//        responseLog = generateResponse(mb, circle, circlearray);
+//        Log.d("Response 2", responseLog);
+//
+//        Log.d("Question 3","Will I end up becoming a cat person when I get old");
+//        responseLog = generateResponse(mb, circle ,circlearray);
+//        Log.d("Response 3", responseLog);
+//
+//        Log.d("All the response",mb.toString());
 
 
     }
